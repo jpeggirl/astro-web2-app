@@ -2,7 +2,7 @@
   "name": "astro-web-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://jpeggirl.github.io/astro-web-app",
+  "homepage": "https://jpeggirl.github.io/astro-web2-app",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
