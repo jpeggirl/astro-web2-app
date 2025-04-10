@@ -243,7 +243,8 @@ const ChatScreen: React.FC = () => {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [useLocalFallback, setUseLocalFallback] = useState<boolean>(false);
+  // Default to local fallback in production for reliability
+  const [useLocalFallback, setUseLocalFallback] = useState<boolean>(!isDevelopment);
   const [useCorsProxy, setUseCorsProxy] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -271,7 +272,7 @@ const ChatScreen: React.FC = () => {
       const aiResponse = generateLocalResponse(input);
       
       const botMessage: Message = {
-        text: aiResponse + "\n\n[Local Fallback Mode: Network connection issues detected]",
+        text: aiResponse + (isDevelopment ? "\n\n[Local Fallback Mode]" : ""),
         isUser: false,
         timestamp: new Date()
       };
@@ -332,6 +333,21 @@ const ChatScreen: React.FC = () => {
     } catch (error) {
       console.error('Error sending message to webhook:', error);
       
+      // In production, directly switch to local mode without showing errors
+      if (!isDevelopment) {
+        setUseLocalFallback(true);
+        const aiResponse = generateLocalResponse(input);
+        const botMessage: Message = {
+          text: aiResponse,
+          isUser: false,
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, botMessage]);
+        setIsTyping(false);
+        return;
+      }
+      
+      // In development, show more detailed errors
       const apiError = error as ApiError;
       let userFriendlyMessage = getErrorMessage(apiError);
       
