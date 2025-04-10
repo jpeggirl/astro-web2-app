@@ -243,8 +243,8 @@ const ChatScreen: React.FC = () => {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  // Default to local fallback in production for reliability
-  const [useLocalFallback, setUseLocalFallback] = useState<boolean>(!isDevelopment);
+  // Try server connection first in all environments
+  const [useLocalFallback, setUseLocalFallback] = useState<boolean>(false);
   const [useCorsProxy, setUseCorsProxy] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
